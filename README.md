@@ -17,15 +17,25 @@
  
 ## Installation
 
+### Installing global for cli usage
 ```sh
 > npm install -g node-xen-backup
 ```
 
+### Installing as node module
+```sh
+> npm install node-xen-backup
+```
+```javascript
+  const XenBackup = require('node-xen-backup')
+```
+
 ## Cli
 
-### Help
+### Getting help
+
  ```sh
-# xen-backup --help
+> xen-backup --help
 
 # Usage: xen-backup [options]
 
@@ -42,34 +52,80 @@
 #   -h, --help                 output usage information
  ```
 
+### Creating a backup to a VM
+```sh
+# Backup command
+> xen-backup -H 192.168.1.1 -P 80 -u root -p password -f /backup/VMLinux.xva -v VMLinux
+# Normal output
+- Searching for VM VMLinux
+- Searching VM real reference for UUID 38d15c62-a1a2-f5f8-de3d-55fb360e96c8
+- Taking snapshot...
+- Getting snapshot data...
+- Exporting snapshot VMLinux1516035235 taked in January 15, 2018
+- Will be saved on file /backup/VMLinux.xva
+- The file has size 784.93MB
+- Removing snapshot...
+- Snapshot removed successfuly
+```
+
 ## API
 
-### IPCalculator
-
-#### SzIPCalculator.isIPv4(string, callback)
-Evaluate if the string passed is a valid IPv4 address.
-
-*string* (string) IP address to evaluate. Must to be a string, can contain netmask, cidr prefix or not.
-
-*callback* (function) Function executed as callback. Arguments (err, boolean).
+### Creating a backup
+Example creating a backup using as Node.js module. This is very much like procedure used in cli.
 
 ```javascript
-// Checks if 192.168.1.1 is a valid IPv4 address.
-SzIPCalculator.isIPv4('192.168.1.1', (err, isValidIp) => {
-  if (err) return console.error(err)
-  if (!isValidIp) return console.log('192.168.1.1 NOT an valid IPv4 address')
-  return console.log('192.168.1.1 Valid IPv4 address')
-})
-// Checks if 192.168.1.1/24 is a valid IPv4 address.
-SzIPCalculator.isIPv4('192.168.1.1/24', (err, res) => {
-  if (err) return console.error(err)
-  if (!isValidIp) return console.log('192.168.1.1/24 NOT an valid IPv4 address')
-  return console.log('192.168.1.1/24 Valid IPv4 address')
-})
-// Checks if 192.168.1.1/255.255.255.0 is a valid IPv4 address.
-SzIPCalculator.isIPv4('192.168.1.1/255.255.255.0', (err, res) => {
-  if (err) return console.error(err)
-  if (!isValidIp) return console.log('192.168.1.1/255.255.255.0 NOT an valid IPv4 address')
-  return console.log('192.168.1.1/255.255.255.0 Valid IPv4 address')
+
+const connOptions = {
+  username: 'root',
+  password: 'password',
+  host: '192.168.1.1',
+  port: 80
+}
+
+const XenBackup = require('node-xen-backup')
+// First sets connecion options.
+XenBackup.setClient(connOptions.host, connOptions.port)
+// Login in xenserver xen-api.
+XenBackup.login(connOptions.username, connOptions.password, (err, sessionId) => {
+  if (err) return console.log(err)
+  // Gets VMs.
+  XenBackup.getAllVMs((err, vms) => {
+    if (err) return console.log(err)
+    let founded = false
+    for (let i in vms) {
+      if (vms[i].uuid.toLowerCase() === program.vm.toLowerCase() || vms[i].name.toLowerCase() === program.vm.toLowerCase()) {
+        founded = true
+        // Gets VMs real reference. UUID is not real reference.
+        XenBackup.getByUuid(vms[i].uuid, (err, ref) => {
+          if (err) return console.log(err)
+          // Takes a snapshot.
+          XenBackup.takeSnapshot(ref.Value, vms[i].name.replace(/\s/g, "")+moment().unix(), (err, snap) => {
+            if (err) return console.log(err)
+            // Now gets snapshot data by real reference.
+            XenBackup.getByRef(snap.Value, (err, snapRecord) => {
+              if (err) return console.log(err)
+              // Uses request to download snapshot and pipes to a file.
+              request.get('http://'+connOptions.username+':'+connOptions.password+'@'+connOptions.host+'/export?use_compression=true&uuid='+snapRecord.uuid)
+              .on('end', function(response) {
+                // Removes the snapshot used.
+                XenBackup.removeVm(snap.Value, (err, res) => {
+                  if (err) return console.log(err)
+                  return console.log('- Snapshot removed successfuly')
+                })
+              })
+              .on('error', function(err) {
+                return console.error(err)
+              })
+              .pipe(fs.createWriteStream(program.filename))
+            })
+          })
+        })
+      }
+    }
+    // If no VM founded.
+    if (!founded) {
+      return console.error("VM not found in Xenserver.")
+    }
+  })
 })
 ```
