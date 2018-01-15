@@ -23,21 +23,23 @@
 
 ## Cli
 
-### Loading IPCalculator module
- ```javascript
- const SzIPCalculator = require('sz-iptools').IPCalculator
- ```
-### Loading ConnTester module
- ```javascript
- const SzConnTester = require('sz-iptools').ConnTester
- ```
-### Loading IFaceConfigurator module
- ```javascript
- const SzIFaceConfig = require('sz-iptools').IFaceConfigurator
- ```
-### Loading IPRouter module
- ```javascript
- const SzIPRouter = require('sz-iptools').IPRouter
+### Help
+ ```sh
+# xen-backup --help
+
+# Usage: xen-backup [options]
+
+
+# Options:
+#
+#   -V, --version              output the version number
+#   -H, --host [host]          IP or hostname from Xenserver. Default: localhost.
+#   -P, --port [port]          TCP port from Xenserver. Default: 80.
+#   -u, --username [username]  Username to login in Xenserver.
+#   -p, --password <password>  Password to login in Xenserver.
+#   -f, --filename <filename>  Path to target file of exported snapshot.
+#   -v, --vm <vm>              VM name label or uuid to backup.
+#   -h, --help                 output usage information
  ```
 
 ## API
