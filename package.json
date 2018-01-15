@@ -11,7 +11,7 @@
     "xenserver", 
     "xen-api", 
     "backup", 
-    "cli", 
+    "cli"
   ],
   "author": "Guilherme Somenzi <guilherme@somenzi.me>",
   "license": "ISC",
