@@ -1,16 +1,10 @@
 # node-xen-backup
 
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
-[![NPM version](https://img.shields.io/npm/v/sz-iptools.svg)](https://www.npmjs.com/package/node-xen-backup) 
+[![NPM version](https://img.shields.io/npm/v/node-xen-backup.svg)](https://www.npmjs.com/package/node-xen-backup) 
 
 <b>node-xen-backup</b> is a Node.js module that uses xen-api to take a snapshot of a Xenserver VM and export to a file for backup. The module includes a cli to execute direct on bash.
  
-* <b>IPRouter</b>: (Just some methods implemented) Gets routes information. Manages routes, tables and routing rules.
-  * getRoutes
-  * getDefaultGateway
-  * getIpForward
-  * setIpForward
-
 ## Support
 
  * Node.js (tested on >= 7.x)

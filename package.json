@@ -6,6 +6,13 @@
   "scripts": {
     "postinstall": "npm install"
   },
+  "keywords": [
+    "xen", 
+    "xenserver", 
+    "xen-api", 
+    "backup", 
+    "cli", 
+  ],
   "author": "Guilherme Somenzi <guilherme@somenzi.me>",
   "license": "ISC",
   "dependencies": {
