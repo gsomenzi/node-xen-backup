@@ -87,7 +87,7 @@ XenBackup.login(connOptions.username, connOptions.password, (err, sessionId) => 
     if (err) return console.log(err)
     let founded = false
     for (let i in vms) {
-      if (vms[i].uuid.toLowerCase() === program.vm.toLowerCase() || vms[i].name.toLowerCase() === program.vm.toLowerCase()) {
+      if (vms[i].uuid.toLowerCase() === "vm_name_or_uuid" || vms[i].name.toLowerCase() === "vm_name_or_uuid") {
         founded = true
         // Gets VMs real reference. UUID is not real reference.
         XenBackup.getByUuid(vms[i].uuid, (err, ref) => {
@@ -110,7 +110,7 @@ XenBackup.login(connOptions.username, connOptions.password, (err, sessionId) => 
               .on('error', function(err) {
                 return console.error(err)
               })
-              .pipe(fs.createWriteStream(program.filename))
+              .pipe(fs.createWriteStream("/backup/vm.xoa"))
             })
           })
         })

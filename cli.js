@@ -11,6 +11,7 @@ let connOptions = {
   username: 'root',
   password: null
 }
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"
 
 program
   .version('0.1.0')
@@ -74,7 +75,9 @@ XenBackup.login(connOptions.username, connOptions.password, (err, sessionId) => 
               }
               console.log('- Exporting snapshot '+snapRecord.name+' taked in '+moment(snapRecord.snapshotTime).format('LL'))
               console.log('- Will be saved on file '+program.filename)
-              request.get('http://'+connOptions.username+':'+connOptions.password+'@'+connOptions.host+'/export?use_compression=true&uuid='+snapRecord.uuid)
+              let protocol = 'http'
+              if ((connOptions.port === '443') || (connOptions.port === 443)) protocol = 'https'
+              request.get(protocol+'://'+connOptions.username+':'+connOptions.password+'@'+connOptions.host+'/export?use_compression=true&uuid='+snapRecord.uuid)
               .on('end', function(response) {
                 const stats = fs.statSync(program.filename)
                 const fileSize = stats.size
