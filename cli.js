@@ -55,51 +55,44 @@ XenBackup.login(connOptions.username, connOptions.password, (err, sessionId) => 
     for (let i in vms) {
       if (vms[i].uuid.toLowerCase() === program.vm.toLowerCase() || vms[i].name.toLowerCase() === program.vm.toLowerCase()) {
         founded = true
-        console.log('- Searching VM real reference for UUID '+vms[i].uuid)
-        XenBackup.getByUuid(vms[i].uuid, (err, ref) => {
+        console.log('- Taking snapshot...')
+        vms[i].snapshot(vms[i].name.replace(/\s/g, "")+moment().unix(), (err, snap) => {
           if (err) {
             console.error(err)
             return process.exit(1)
           }
-          console.log('- Taking snapshot...')
-          XenBackup.takeSnapshot(ref.Value, vms[i].name.replace(/\s/g, "")+moment().unix(), (err, snap) => {
+          console.log('- Getting snapshot data...')
+          XenBackup.getByRef(snap.Value, (err, snapRecord) => {
             if (err) {
               console.error(err)
               return process.exit(1)
             }
-            console.log('- Getting snapshot data...')
-            XenBackup.getByRef(snap.Value, (err, snapRecord) => {
-              if (err) {
-                console.error(err)
-                return process.exit(1)
-              }
-              console.log('- Exporting snapshot '+snapRecord.name+' taked in '+moment(snapRecord.snapshotTime).format('LL'))
-              console.log('- Will be saved on file '+program.filename)
-              let protocol = 'http'
-              if ((connOptions.port === '443') || (connOptions.port === 443)) protocol = 'https'
-              request.get(protocol+'://'+connOptions.username+':'+connOptions.password+'@'+connOptions.host+'/export?use_compression=true&uuid='+snapRecord.uuid)
-              .on('end', function(response) {
-                const stats = fs.statSync(program.filename)
-                const fileSize = stats.size
-                console.log('- Snapshot exported successfully to '+program.filename)
-                console.log('- The file has size '+(fileSize / 1024 / 1024).toFixed(2)+"MB")
-                console.log('- Removing snapshot...')
-                XenBackup.removeVm(snap.Value, (err, res) => {
-                  if (err) {
-                    console.error(err)
-                    return process.exit(1)
-                  }
-                  console.log('- Snapshot removed successfuly')
-                  return process.exit(0)
-                })
+            console.log('- Exporting snapshot '+snapRecord.name+' taked in '+moment(snapRecord.snapshotTime).format('LL'))
+            console.log('- Will be saved on file '+program.filename)
+            let protocol = 'http'
+            if ((connOptions.port === '443') || (connOptions.port === 443)) protocol = 'https'
+            request.get(protocol+'://'+connOptions.username+':'+connOptions.password+'@'+connOptions.host+'/export?use_compression=true&uuid='+snapRecord.uuid)
+            .on('end', function(response) {
+              const stats = fs.statSync(program.filename)
+              const fileSize = stats.size
+              console.log('- Snapshot exported successfully to '+program.filename)
+              console.log('- The file has size '+(fileSize / 1024 / 1024).toFixed(2)+"MB")
+              console.log('- Removing snapshot...')
+              XenBackup.removeVm(snap.Value, (err, res) => {
+                if (err) {
+                  console.error(err)
+                  return process.exit(1)
+                }
+                console.log('- Snapshot removed successfuly')
+                return process.exit(0)
               })
-              .on('error', function(err) {
-                console.log('- ERROR while exporting snaphot:')
-                console.error(err)
-                return process.exit(1)
-              })
-              .pipe(fs.createWriteStream(program.filename))
             })
+            .on('error', function(err) {
+              console.log('- ERROR while exporting snaphot:')
+              console.error(err)
+              return process.exit(1)
+            })
+            .pipe(fs.createWriteStream(program.filename))
           })
         })
       }
