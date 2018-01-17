@@ -4,6 +4,12 @@
 [![NPM version](https://img.shields.io/npm/v/node-xen-backup.svg)](https://www.npmjs.com/package/node-xen-backup) 
 
 <b>node-xen-backup</b> is a Node.js module that uses xen-api to take a snapshot of a Xenserver VM and export to a file for backup. The module includes a cli to execute direct on bash.
+
+## You can contribute
+
+It is a free software and its use is free for everyone, but if you want to contribute anyway, please submit a donation.
+
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=G9AL2VHXZRL92&lc=US&item_name=Xenserver%20backup%20script%20development%20costs%20and%20efforts&item_number=0001&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted)
  
 ## Support
 
