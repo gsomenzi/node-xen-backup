@@ -4,7 +4,6 @@
   "description": "node-xen-backup is a Node.js module that uses xen-api to take a snapshot of a Xenserver VM and export to a file for backup. The module includes a cli to execute direct on bash.",
   "main": "index.js",
   "scripts": {
-    "postinstall": "npm install"
   },
   "keywords": [
     "xen",
