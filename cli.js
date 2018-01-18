@@ -95,7 +95,7 @@ XenBackup.login(connOptions.username, connOptions.password, (err, sessionId) => 
       }
     }
     if (!founded) {
-      console.error('VDI not found in Xenserver.')
+      console.error('VM or VDI not found in Xenserver.')
       return process.exit(1)
     }
   })
