@@ -1,4 +1,4 @@
-# v0.3.3
+# v0.3.0
 - Methods for API usage simplified.
 - Support for VDI export.
 # v0.2.3
