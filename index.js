@@ -1,4 +1,4 @@
-const XenModule = require('./lib/xen-module');
+const XenModule = require('./lib/xen-module')
 
 module.exports = {
   setClient: (host, port, callback) => {
@@ -9,6 +9,9 @@ module.exports = {
   },
   getAllVMs: (callback) => {
     return XenModule.getAllVMs(callback)
+  },
+  getAllVDIs: (callback) => {
+    return XenModule.getAllVDIs(callback)
   },
   removeVm: (ref, callback) => {
     return XenModule.removeVm(ref, callback)
