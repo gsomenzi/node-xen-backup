@@ -114,7 +114,7 @@ function getItens (callback) {
       return callback(null, vdis)
     })
   }
-  if ((program.type !== 'vdi') && (program.type !== 'mv')) {
+  if ((program.type !== 'vdi') && (program.type !== 'vm')) {
     return callback(new Error('Cannot define object type <vm|vdi>.'))
   }
 }
