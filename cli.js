@@ -71,7 +71,7 @@ XenBackup.login(connOptions.username, connOptions.password, (err, sessionId) => 
             return process.exit(1)
           }
           console.log(`- Exporting snapshot ${snapshot.name} taked in ${moment(snapshot.snapshotTime).format('LL')}`)
-          console.log(`- Will be saved on file ${program.filename}`)
+          console.log(`- It will be saved on file ${program.filename}`)
           let protocol = 'http'
           if ((connOptions.port === '443') || (connOptions.port === 443)) protocol = 'https'
           downloadBackup(protocol, snapshot.uuid, (err, download) => {
